@@ -1,5 +1,6 @@
 # Import socket module
 import socket
+import json
 
 # Create a socket object
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,15 +28,23 @@ while True:
 
     # Add the peer and its address to the dictionary
     peers[peer_id] = addr
+    print(peers)
 
     # Add the files and their owners to the dictionary
     for file in file_list.split(','):
-        if file not in files:
-            files[file] = []
+        files[file] = []
         files[file].append(peer_id)
+    
+    print(files)
+
+    with open("peers.txt", 'a') as p:
+        p.write(str(peers))
+
+    with open("files.txt", 'a') as f:
+        f.write(json.dumps(files))
 
     # Send the list of peers and files to the client
-    conn.send((str(peers) + '|' + str(files)).encode())
+    conn.send(json.dumps(peers).encode('utf-8'))
 
     # Close the connection
     conn.close()
