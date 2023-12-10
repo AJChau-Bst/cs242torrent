@@ -30,7 +30,7 @@ hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 client.send((IPAddr).encode())
 
- # Receive the peer ID and the file list from the client
+# Receive the peer ID and the file list from the client
 # peers = client.recv(1024).decode()
 # print(peers)
 
@@ -43,9 +43,6 @@ if requestQueryToUser == "Yes":
 else:
     print("Closing connection to server")
     client.close()
-
-
-
 
 # Close the client connection
 client.close()
