@@ -77,7 +77,7 @@ def main():
     BUFFER_SIZE = 4096  # Buffer size for receiving data
     x = input("c for connecting to tracker server, r to request file, s for starting server:")
     if x == 'c':
-        ipPort = connectToTrackerServer()
+        connectToTrackerServer()
     if x == 'r':
         ip = input("IP")
         #ip = "10.7.1.191"

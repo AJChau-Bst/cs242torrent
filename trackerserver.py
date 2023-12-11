@@ -20,9 +20,12 @@ server.listen(5)
 files = {}
 
 def find_lines_with_word(filename, word):
+    newList = []
     with open(filename, "r") as f:
         lines = f.readlines()
-        return [line.strip().split(":")[1].replace('"', '').replace("'", "").replace("\\", "").replace("}", "").replace("]", "").replace("[", "").replace("{", "").replace(" ", "") for line in lines if word in line]
+        newList.append([line.strip().split(":")[1].replace('"', '').replace("'", "").replace("\\", "").replace("}", "").replace("]", "").replace("[", "").replace("{", "").replace(" ", "") for line in lines if word in line])
+        return newList
+
 
 while True:
     # Accept a connection
@@ -40,19 +43,16 @@ while True:
 
     # Add the files and their owners to the dictionary
     for file in fileName.split(","):
-        files[file] = []
-        files[file].append(ipAdd)
-        
-    
-    print(files)
+        with open("files.txt", "a") as f:
+            f.write(str(file) + ":" + str(ipAddress))
+            f.write("\n")
 
-    with open("files.txt", 'a') as f:
-        f.write(str(files))
-        f.write("\n")
 
     if requestedFile != "":
         newList = []
-        newList.append(find_lines_with_word("files.txt", requestedFile))
+        newList = find_lines_with_word("files.txt", requestedFile)
+        newList = str(newList)
+        returnList = list(newList.split(","))
         # chosenIP = choose_valid_least_requested_ip(newList)
         # update_ip_request_count(chosenIP)
         # print(newList)
@@ -60,8 +60,8 @@ while True:
         print(newList)
         #print(text)
 
-    returnValue = str(newList[0])
-    returnValue = returnValue.split(",")[0] + ", " + returnValue.split(",")[1].replace("'", '')
+    returnValue = str(returnList[0])
+    returnValue = returnValue.replace('"', '').replace("'", "").replace("\\", "").replace("}", "").replace("]", "").replace("[", "").replace("{", "").replace(" ", "")
     # Send the list of peers and files to the client
     conn.send(returnValue.encode('utf-8'))
 
