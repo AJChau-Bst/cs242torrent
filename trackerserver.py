@@ -48,6 +48,7 @@ while True:
 
     with open("files.txt", 'a') as f:
         f.write(str(files))
+        f.write("\n")
 
     if requestedFile != "":
         newList = []
