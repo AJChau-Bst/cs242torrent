@@ -5,7 +5,7 @@ import ipaddress
 
 requestedFile =''
 ip = ""
-port = 0
+port = 8080
 
 path = pathlib.Path(__file__).parent.resolve()
 pathStr = str(path) + "/files"
@@ -14,6 +14,7 @@ print (pathStr)
     
 def connectToTrackerServer():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # client.bind(("127.0.0.1", 8081))
     client.connect(("127.0.0.1", 8080))
 
     # Send the file list to the server
@@ -36,8 +37,8 @@ def connectToTrackerServer():
         recievedArr = client.recv(1024).decode()
         recievedArr = str(recievedArr)
         ip = recievedArr.split(",")[0].replace("[", '').replace("(", '').replace("'", '')
-        port = recievedArr.split(",")[1].replace("]", '').replace(")", '').replace("'", '')
-        port = int(port)
+        #port = recievedArr.split(",")[1].replace("]", '').replace(")", '').replace("'", '')
+        #port = int(port)
     else:
         print("Closing connection to server")
         client.close()
@@ -53,7 +54,7 @@ def requestFile(ipaddress, port, fileName):
     SEPARATOR = "<SEPARATOR>"
 
     print(f"[+] Connecting to {host}:{port}")
-    s.connect((host, port))
+    s.connect((host, 8080))
     print("[+] Connected.")
 
     # receive the file infos
@@ -111,7 +112,7 @@ def startServer():
 
 def main():
     HOST = ''  # Standard loopback interface address (localhost)
-    PORT = 65432  # Port to listen on (non-privileged ports are > 1024)
+    PORT = 8080  # Port to listen on (non-privileged ports are > 1024)
     BUFFER_SIZE = 4096  # Buffer size for receiving data
     x = input("c for connecting to tracker server, s for starting server:")
     if x == 'c':
