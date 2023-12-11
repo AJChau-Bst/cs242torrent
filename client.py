@@ -16,7 +16,7 @@ def connect_to_tracker_server():
     #ipTS = 127.0.0.1
     # ipTS = '"' + ipTS + '"'
     # Connect to the tracker server
-    client.connect(("127.0.0.1", 8080)) 
+    client.connect(("10.7.1.191", 8080)) 
 
     # Send the file list to the server
     peer_id = socket.gethostname()

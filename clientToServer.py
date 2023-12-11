@@ -14,8 +14,12 @@ print (pathStr)
     
 def connectToTrackerServer():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+<<<<<<< Updated upstream
     # client.bind(("127.0.0.1", 8081))
     client.connect(("127.0.0.1", 8080))
+=======
+    client.connect(("10.7.1.191", 8080)) 
+>>>>>>> Stashed changes
 
     # Send the file list to the server
     peer_id = socket.gethostname()
