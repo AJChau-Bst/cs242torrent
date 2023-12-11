@@ -7,7 +7,6 @@ import re
 
 requestedFile = ""
 IP_COUNT_FILE = "ip_counts.txt"
-
 # Create a socket object
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -30,66 +29,63 @@ def find_lines_with_word(filename, word):
 def read_ip_counts():
   ip_counts = {}
   try:
-    with open(IP_COUNT_FILE, "r") as f:
+    with open("ip_counts.txt") as f:
       for line in f:
+        # Split the line and remove unnecessary characters
+        key, value = line.strip().split(",")
+        key = key.replace("'", "").replace(":", "")
+
+        # Handle None values and convert to integer
         try:
-          ip, count = line.strip().split(",")
-          ip_counts[ip] = int(count)
+          value = int(value)
         except ValueError:
-          # Handle invalid lines
-          print(f"Warning: Invalid line in ip_counts.txt: {line}")
-          continue
+          value = 0
+
+        ip_counts[key] = value
   except FileNotFoundError:
     pass
   return ip_counts
 
-def save_ip_counts(ip_counts):
-  """
-  Saves the IP counts to the file.
+ip_counts = read_ip_counts()
+print(ip_counts)  # Output: {'127.0.0.1': 0}
 
-  Args:
-    ip_counts: A dictionary mapping IP addresses to their recommendation counts.
-  """
+def write_ip_counts(ip_counts):
   with open(IP_COUNT_FILE, "w") as f:
     for ip, count in ip_counts.items():
-      f.write(f"{ip},{count}\n")
+      # Write the IP address and count in the desired format
+      f.write(f"{ip}:{count}\n")
 
-def get_least_recommended_ip(ips):
-  """
-  Selects an IP address with the least number of recommendations from the list of IPs
-  and updates its count in the IP count dictionary.
+def get_least_count_ip(ip_counts, new_ips):
+# Filter the list to include only IPs with counts
+  filtered_ips = [ip for ip in new_ips if ip in ip_counts]
 
-  Args:
-    ips: A list of IP addresses.
+  # Find the IP with the least count
+  if not filtered_ips:
+    return random.choice(new_ips)
+  else: 
+    min_count = min(ip_counts.values() for ip in filtered_ips)
+    min_count_ips = [ip for ip in filtered_ips if ip_counts[ip] == min_count]
 
-  Returns:
-    The IP address with the least number of recommendations.
-  """
-  ip_counts = read_ip_counts()
+    # If there are multiple IPs with the least count, select one randomly
+    if len(min_count_ips) > 1:
+      selected_ip = random.choice(min_count_ips)
+    else:
+      selected_ip = min_count_ips[0]
 
-  # Update counts for provided IPs
-  for ip in set(ips):  # Eliminate duplicates and update counts
-    if ip not in ip_counts:
-      ip_counts[ip] = 0
-    ip_counts[ip] += 1
+    return selected_ip
 
-  # Find the IP with the least recommendations
-  min_count = min(ip_counts.values())
-  min_count_ips = [ip for ip, count in ip_counts.items() if count == min_count]
-
-  # If there are multiple IPs with the least count, select one randomly
-  if len(min_count_ips) > 1:
-    selected_ip = random.choice(min_count_ips)
+def update_ip_count(ip_set, ip):
+  # Convert to string for consistent comparison
+  ip = str(ip)
+  if ip in ip_set:
+    ip_set.pop(ip)
+    ip_set.setdefault(f"{ip}:1")  # Add count to the IP address
   else:
-    selected_ip = min_count_ips[0]
+    ip_set.setdefault(f"{ip}:0")  # Add the new IP with a count of 0
 
-  # Update the count for the selected IP in the dictionary
-  ip_counts[selected_ip] += 1
+  print(ip_set)
+  return ip_set
 
-  # Save the updated IP counts
-  save_ip_counts(ip_counts)
-
-  return selected_ip
 
 
 while True:
@@ -122,7 +118,14 @@ while True:
         # update_ip_request_count(chosenIP)
         # print(newList)
         # print(chosenIP)
-        test = get_least_recommended_ip(returnList)
+        ipCounts = read_ip_counts()
+        print(ipCounts)
+        test = get_least_count_ip(ipCounts, returnList)
+        print(test)
+        ipCounts = update_ip_count(ipCounts, test)
+        print(ipCounts)
+        write_ip_counts(ipCounts)
+
         print(test)
         print(newList)
         #print(text)
