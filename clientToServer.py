@@ -1,5 +1,5 @@
 import socket
-from os import listdir
+import os
 import pathlib
 import ipaddress
 
@@ -14,12 +14,8 @@ print (pathStr)
     
 def connectToTrackerServer():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-<<<<<<< Updated upstream
     # client.bind(("127.0.0.1", 8081))
-    client.connect(("127.0.0.1", 8080))
-=======
-    client.connect(("10.7.1.191", 8080)) 
->>>>>>> Stashed changes
+    client.connect(("10.7.1.191", 8080))
 
     # Send the file list to the server
     peer_id = socket.gethostname()
@@ -52,42 +48,10 @@ def requestFile(ipaddress, port, fileName):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((ipaddress, port))
     client.send((fileName).encode())
-    # the buffer size, 4KB
-    BUFFER_SIZE = 4096
-    # the separator, we use it to separate the filename and filesize in the header
-    SEPARATOR = "<SEPARATOR>"
-
-    print(f"[+] Connecting to {host}:{port}")
-    s.connect((host, 8080))
-    print("[+] Connected.")
-
-    # receive the file infos
-    # receive using client socket, not server socket
-    received = client.recv(4096).decode()
-    fileName, filesize = received.split(SEPARATOR)
-    # remove absolute path if there is
-    filename = os.path.basename(filename)
-    # convert to integer
-    filesize = int(filesize)
-
-    # start receiving the file from the socket
-    # and writing to the file stream
-    progress = 0 # to keep track of the progress
-    with open(filename, "wb") as f:
-        while True:
-            # read 1024 bytes from the socket (receive)
-            bytes_read = client.recv(BUFFER_SIZE)
-            if not bytes_read:    
-                # nothing is received
-                # file transmitting is done
-                break
-            # write to the file the bytes we just received
-            f.write(bytes_read)
-            # update the progress
-            progress += len(bytes_read)
-            print(f"Progress: {progress / filesize * 100:.2f}%")
-
-    # close the client socket
+    bytes_read = client.recv(1024).decode()
+    print(bytes_read)
+    with open(fileName, "w") as f:
+        f.write(bytes_read)
     client.close()
 
 def startServer():
@@ -118,10 +82,14 @@ def main():
     HOST = ''  # Standard loopback interface address (localhost)
     PORT = 8080  # Port to listen on (non-privileged ports are > 1024)
     BUFFER_SIZE = 4096  # Buffer size for receiving data
-    x = input("c for connecting to tracker server, s for starting server:")
+    x = input("c for connecting to tracker server, r to request file, s for starting server:")
     if x == 'c':
         ipPort = connectToTrackerServer()
-        requestFile(ip, port,requestedFile)
+    if x == 'r':
+        #ip = input("IP")
+        ip = "10.7.1.191"
+        requestedFile = ('w.txt')
+        requestFile(ip, PORT , requestedFile)
     if x == "s": 
         # Create socket
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
