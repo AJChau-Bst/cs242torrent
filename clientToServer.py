@@ -54,26 +54,22 @@ def requestFile(ipaddress, port, fileName):
         f.write(bytes_read)
     client.close()
 
-def startServer():
+def startServer(client_socket):
     try:
         # Receive file name from client
         filename = client_socket.recv(1024).decode()
+        print(filename)
 
         # Check if file exists
         file_path = os.path.join("files", filename)
-        if not os.path.isfile(file_path):
-            client_socket.send("File not found".encode())
-            return
 
         # Read entire file content
         with open(file_path, "rb") as file:
             file_content = file.read()
 
-        # Send file size
-        client_socket.send(str(len(file_content)).encode())
-
         # Send entire file content
-        client_socket.sendall(file_content)
+        print(file_content)
+        client_socket.send(file_content)
     finally:
         # Close connection
         client_socket.close()
@@ -106,7 +102,7 @@ def main():
             # Accept connections and handle them
             client_socket, client_address = server_socket.accept()
             print(f"Connection from {client_address}")
-            handle_connection(client_socket)
+            startServer(client_socket)
 
 if __name__ == "__main__":
     main()
