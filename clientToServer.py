@@ -1,5 +1,6 @@
 import socket
 import os
+from os import listdir
 import pathlib
 import ipaddress
 
@@ -15,7 +16,8 @@ print (pathStr)
 def connectToTrackerServer():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # client.bind(("127.0.0.1", 8081))
-    client.connect(("10.7.1.191", 8080))
+    ip = input("Tracker Server IP: ")
+    client.connect((ip, 8080))
 
     # Send the file list to the server
     peer_id = socket.gethostname()
@@ -30,18 +32,14 @@ def connectToTrackerServer():
     IPAddr = socket.gethostbyname(hostname)
     client.send((IPAddr).encode())
 
-    requestQueryToUser = input("Do you want to query a file? Yes or No: ")
-    if requestQueryToUser == "Yes":
-        requestedFile = input("Name of the File Requested: ")
-        client.send((requestedFile).encode())
-        recievedArr = client.recv(1024).decode()
-        recievedArr = str(recievedArr)
-        ip = recievedArr.split(",")[0].replace("[", '').replace("(", '').replace("'", '')
-        #port = recievedArr.split(",")[1].replace("]", '').replace(")", '').replace("'", '')
-        #port = int(port)
-    else:
-        print("Closing connection to server")
-        client.close()
+    requestedFile = input("Name of the File Requested: ")
+    client.send((requestedFile).encode())
+    recievedArr = client.recv(1024).decode()
+    recievedArr = str(recievedArr)
+    print(recievedArr)
+    ip = recievedArr.split(",")[0].replace("[", '').replace("(", '').replace("'", '')
+    #port = recievedArr.split(",")[1].replace("]", '').replace(")", '').replace("'", '')
+    #port = int(port)
     client.close()
 
 def requestFile(ipaddress, port, fileName):
@@ -75,17 +73,16 @@ def startServer(client_socket):
         client_socket.close()
 
 def main():
-    HOST = ''  # Standard loopback interface address (localhost)
     PORT = 8080  # Port to listen on (non-privileged ports are > 1024)
     BUFFER_SIZE = 4096  # Buffer size for receiving data
     x = input("c for connecting to tracker server, r to request file, s for starting server:")
     if x == 'c':
         ipPort = connectToTrackerServer()
     if x == 'r':
-        #ip = input("IP")
-        ip = "10.7.1.191"
-        requestedFile = ('w.txt')
-        requestFile(ip, PORT , requestedFile)
+        ip = input("IP")
+        #ip = "10.7.1.191"
+        requested = input("Requested File")
+        requestFile(ip, PORT , requested)
     if x == "s": 
         # Create socket
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
