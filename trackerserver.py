@@ -46,7 +46,7 @@ while True:
     
     print(files)
 
-    with open("files.txt", 'w') as f:
+    with open("files.txt", 'a') as f:
         f.write(str(files))
 
     if requestedFile != "":
@@ -60,7 +60,7 @@ while True:
         #print(text)
 
     returnValue = str(newList[0])
-    returnValue = returnValue.split(",")[0] + ", " returnValue.split(",")[1].replace("'", '')
+    returnValue = returnValue.split(",")[0] + ", " + returnValue.split(",")[1].replace("'", '')
     # Send the list of peers and files to the client
     conn.send(returnValue.encode('utf-8'))
 

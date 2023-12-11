@@ -88,7 +88,7 @@ def main():
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # Bind socket to address
-        server_socket.bind((HOST, PORT))
+        server_socket.bind(('0.0.0.0', PORT))
 
         # Listen for incoming connections
         server_socket.listen(1)
