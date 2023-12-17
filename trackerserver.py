@@ -27,6 +27,8 @@ ip_count = {
         "172.23": 0
     },  
 }
+
+#loadBalancing will return the ip address of the node that has sent the requestedFile the least. Will increment the number of times that the ip has sent file
 def loadBalancing(requestedFile):
 	#setting the first node of the requested txt file to the first node as a 
     #placeholder
