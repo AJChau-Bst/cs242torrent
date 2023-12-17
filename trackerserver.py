@@ -32,14 +32,12 @@ def loadBalancing(requestedFile):
     #placeholder
     ipSend = list(ip_count.get(requestedFile).keys())[0]
     
-    nodeCount = 0
-    
     #length of nested dict
     numDicts = len(ip_count.get(requestedFile).keys())
-    for node in ips.get(requestedFile):
+    for node in ip_count.get(requestedFile):
         if(ip_count[requestedFile][node] < ip_count[requestedFile][ipSend]):
             ipSend = node
-        nodeCount+=1
+    ip_count[requestedFile][ipSend]+=1
     return ipSend
    
 
