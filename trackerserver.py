@@ -31,9 +31,8 @@ def loadBalancing(requestedFile):
 	#setting the first node of the requested txt file to the first node as a 
     #placeholder
     ipSend = list(ip_count.get(requestedFile).keys())[0]
-    
-    #length of nested dict
-    numDicts = len(ip_count.get(requestedFile).keys())
+
+    ##for loop to find the ip with the least # of requestedFile sends
     for node in ip_count.get(requestedFile):
         if(ip_count[requestedFile][node] < ip_count[requestedFile][ipSend]):
             ipSend = node
