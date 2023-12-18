@@ -2,27 +2,26 @@ import socket
 import os
 from os import listdir
 import pathlib
-import ipaddress
 
 requestedFile =''
 ip = ""
 port = 8080
-
 path = pathlib.Path(__file__).parent.resolve()
 pathStr = str(path) + "/files"
-print (pathStr)
 
-    
+#COMMENT HERE
 def connectToTrackerServer():
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # client.bind(("127.0.0.1", 8081))
     ip = input("Tracker Server IP: ")
     client.connect((ip, 8080))
+
+    #Send Initial Status of 0 -- Meaning we want to use the tracker like normal
+    client.send(("0").encode())
 
     # Send the file list to the server
     peer_id = socket.gethostname()
     file_list = listdir(pathStr)
-    print(file_list)
+    print("Sending: " + str(file_list))
     delimiter = ", "
     result_string = delimiter.join(file_list)
     client.send((result_string).encode())
@@ -37,11 +36,23 @@ def connectToTrackerServer():
     recievedArr = client.recv(1024).decode()
     recievedArr = str(recievedArr)
     print(recievedArr)
-    ip = recievedArr.split(",")[0].replace("[", '').replace("(", '').replace("'", '')
-    #port = recievedArr.split(",")[1].replace("]", '').replace(")", '').replace("'", '')
-    #port = int(port)
     client.close()
 
+
+def deleteFromTrackerServer():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ip = input("Tracker Server IP: ")
+    client.connect((ip, 8080))
+
+    #Send that it wants to delete from the server. 
+    client.send(("1").encode())
+
+    #Send IP to Server
+    hostname = socket.gethostname()
+    IPAddr = socket.gethostbyname(hostname)
+    client.send((IPAddr).encode())
+
+#COMMENT HERE
 def requestFile(ipaddress, port, fileName):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client.connect((ipaddress, port))
@@ -52,51 +63,37 @@ def requestFile(ipaddress, port, fileName):
         f.write(bytes_read)
     client.close()
 
+#COMMENT HERE
 def startServer(client_socket):
     try:
-        # Receive file name from client
         filename = client_socket.recv(1024).decode()
         print(filename)
-
-        # Check if file exists
         file_path = os.path.join("files", filename)
-
-        # Read entire file content
         with open(file_path, "rb") as file:
             file_content = file.read()
-
-        # Send entire file content
         print(file_content)
         client_socket.send(file_content)
     finally:
-        # Close connection
         client_socket.close()
 
 def main():
-    PORT = 8080  # Port to listen on (non-privileged ports are > 1024)
-    BUFFER_SIZE = 4096  # Buffer size for receiving data
-    x = input("c for connecting to tracker server, r to request file, s for starting server:")
-    if x == 'c':
+    PORT = 8080
+    BUFFER_SIZE = 4096
+    x = input("c for connecting to tracker server, r to request file, s for starting server, d to delete information from tracker server:")
+    if x == 'c': #COMMENT HERE
         connectToTrackerServer()
-    if x == 'r':
+    if x == 'd': #COMMENT HERE
+        deleteFromTrackerServer()
+    if x == 'r': #COMMENT HERE
         ip = input("IP")
-        #ip = "10.7.1.191"
         requested = input("Requested File")
         requestFile(ip, PORT , requested)
-    if x == "s": 
-        # Create socket
+    if x == "s": #COMMENT HERE
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        # Bind socket to address
         server_socket.bind(('0.0.0.0', PORT))
-
-        # Listen for incoming connections
         server_socket.listen(1)
-
         print(f"Server listening on port {PORT}")
-
         while True:
-            # Accept connections and handle them
             client_socket, client_address = server_socket.accept()
             print(f"Connection from {client_address}")
             startServer(client_socket)
