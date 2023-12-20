@@ -46,9 +46,33 @@ def loadBalancer(ipList, ipDict = {}):
         w.write(json.dumps(ipDict))
     return minIp
 
-#Comment Here
+#PARAMETER: ipToDelete, i.e. the IP of the node leaving the network
+#Delete any line in files.txt with the given IP
 def deleteFromTrackerServer(ipAddress):
-    return 0
+        '''PARAMETER: ipToDelete, i.e. the IP of the node leaving the network
+       Delete any line in files.txt with the given IP
+    '''
+    
+    ##reading the lines of the file
+    f = open("files.txt","r")
+    lines = f.readlines()
+    
+    ##adding any line without IP to the lines to be rewritten into text file
+    linesWithoutIP = []
+    for line in lines:
+#         if (ipToDelete != line.strip()):
+        if (line.find(" " + ipAddress + " ") == -1) or (ipAddress != line.strip()):
+            linesWithoutIP.append(line)
+    f.close()
+    
+    print(linesWithoutIP)
+    
+    ##writing lines without the given IP to the text file
+    f = open("files.txt","w")
+    f.writelines(linesWithoutIP)
+    f.close()
+    
+ 
 
 
 while True:
