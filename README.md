@@ -17,7 +17,7 @@ Make sure you have Python installed on your system.
 ### Tracker Server
 1. In the terminal, run the following command:
     ```bash
-        python trackerserver.py
+    python trackerserver.py
 2. The tracker server will then start listening for incoming connection requests.
 
 ### Client
