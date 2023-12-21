@@ -63,8 +63,6 @@ def deleteFromTrackerServer(ipAddress):
             linesWithoutIP.append(line)
     f.close()
     
-    print(linesWithoutIP)
-    
     ##writing lines without the given IP to the text file
     f = open("files.txt","w")
     f.writelines(linesWithoutIP)
