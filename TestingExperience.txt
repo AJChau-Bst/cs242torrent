@@ -1,0 +1,37 @@
+As we had mentioned in our previous presentation, we were planning to do the following testing plans:
+
+- Connect to the tracker-server + report the files the node has
+- Connect to the tracker-server and requesting a file that no one has & not waiting forever
+- Connecting to a node with the file
+- More than one peer has the requested file
+    - load balancing algorithm
+- Leave the Tracker Server, delete information
+
+Here is our experience with testing each case
+
+
+///Connect to the tracker-server + report the files the node has///
+This is the regular, most basic case that we were aiming for accomplishing when creating our P2P system to begin with.
+This case is mostly handeled by the connectToTrackerServer fuction in the clientToServer.py.
+The client first connects to the tracker server, sends a list of the files that it has, and then the tracker upadtes its records in the files.txt file.
+
+///Connect to the tracker-server and requesting a file that no one has & not waiting forever///
+This case is mostly handed in the if statement in trackerserver.py at line 99, where if the file is not available, the tracker server sends a message indicating that the file is not available.
+--> ""Sorry, the file you requested is not available. Please try again later."
+Automatically returns the statement when asked for a file that the tracker server does not have.
+
+///Connecting to a node with the file///
+This case is mostly handled by the requestFile in clientToServer.py. The client first connects to the tracker server, and chooses the 'r' function to request a file from an IP address.
+After that, the client follows the prompts asked, and recieves the file it wants. The next time the client contacts the server, it will update the files which that IP has.
+In the files.txt file the IP of the client is updated with the new file it had requested and obtained.
+
+///More than one peer has the requested file///
+This case is mostly handled by the loadBalancer function in trackerserver.py. The load balancing function takes a list of available peers, their IP addresses, and a dictionary to track the load on each peer. 
+It returns the IP address of the selected peer based on which IP has the least count for the number of times it has been returned.
+
+///Leave the Tracker Server, delete information///
+This case is handled in the tracker server with the .JSON dictionary, the deleteFromTrackerServer function in trackerserver.py, and a signal que from the user.
+The function reads the current list of files from the tracker server, removes the lines corresponding to the leaving peer, and writes the updated list back to the tracker server.
+When a peer wants to depart from the network, it initiates a connection to the tracker server and sends a status request "1" along with its IP address. 
+The tracker server, upon receiving this request, calls the deleteFromTrackerServer(ipAddress) function, which removes the lines associated with that IP address from the "files.txt" file.
+
