@@ -51,7 +51,7 @@ Make sure you have Python installed on your system.
 
 ### Tracker Server (trackerserver.py)
 
-- Load Balancing: Distributes file requests among available peers using a simple load balancing algorithm.
+- Load Balancing: Distributes file requests among available peers using a simple load balancing algorithm through a JSON dictionary.
 - File Tracking: Manages information about available files and peer IPs.
 - Deleting Information: Removes file information associated with a departing peer.
 

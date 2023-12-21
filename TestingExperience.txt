@@ -21,8 +21,8 @@ This case is mostly handed in the if statement in trackerserver.py at line 99, w
 Automatically returns the statement when asked for a file that the tracker server does not have.
 
 ///Connecting to a node with the file///
-This case is mostly handled by the requestFile in clientToServer.py. The client first connects to the tracker server, and chooses the 'r' function to request a file from an IP address.
-After that, the client follows the prompts asked, and recieves the file it wants. The next time the client contacts the server, it will update the files which that IP has.
+This case is mostly handled by the requestFile in clientToServer.py. The client first connects to the tracker server, and chooses the 'r' option to request a file from an IP address.
+After that, the client follows the prompts asked, and recieves the file it wants. The next time the client contacts the server, it will update the files which that IP has if the user wants.
 In the files.txt file the IP of the client is updated with the new file it had requested and obtained.
 
 ///More than one peer has the requested file///
@@ -30,8 +30,8 @@ This case is mostly handled by the loadBalancer function in trackerserver.py. Th
 It returns the IP address of the selected peer based on which IP has the least count for the number of times it has been returned.
 
 ///Leave the Tracker Server, delete information///
-This case is handled in the tracker server with the .JSON dictionary, the deleteFromTrackerServer function in trackerserver.py, and a signal que from the user.
+This case is handled in the tracker server-- the deleteFromTrackerServer function in trackerserver.py, and a signal que from the user.
 The function reads the current list of files from the tracker server, removes the lines corresponding to the leaving peer, and writes the updated list back to the tracker server.
-When a peer wants to depart from the network, it initiates a connection to the tracker server and sends a status request "1" along with its IP address. 
+When a peer wants to depart from the network, it initiates a connection to the tracker server and sends a status request "1" along with its IP address through the prompt choice. 
 The tracker server, upon receiving this request, calls the deleteFromTrackerServer(ipAddress) function, which removes the lines associated with that IP address from the "files.txt" file.
 

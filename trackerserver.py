@@ -11,7 +11,6 @@ server.bind(('0.0.0.0', 8080))
 server.listen(5)
 files = {}
 
-#Comment Here
 def find_lines_with_word(filename, word):
     newList = []
     with open(filename, "r") as f:
@@ -19,7 +18,7 @@ def find_lines_with_word(filename, word):
         newList.append([line.strip().split(":")[1].replace('"', '').replace("'", "").replace("\\", "").replace("}", "").replace("]", "").replace("[", "").replace("{", "").replace(" ", "") for line in lines if word in line])
     return newList
 
-#Comment Here
+#Checks to see if theres stuff in JSON
 def saveCheck():
     if os.path.getsize("loadBalancing.json") <= 2:
         pass
@@ -31,7 +30,7 @@ def saveCheck():
         except IOError:
             pass
 
-#Comment Here
+#If Ip isn't in the dictionary, set to 0. Find min count of ipList
 def loadBalancer(ipList, ipDict = {}):
     loadMin = sys.maxsize
     minIp = ""
