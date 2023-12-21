@@ -59,7 +59,7 @@ def deleteFromTrackerServer(ipAddress):
     ##adding any line without IP to the lines to be rewritten into text file
     linesWithoutIP = []
     for line in lines:
-        if (":"+ipAddress != line):
+        if (ipAddress not in line):
             linesWithoutIP.append(line)
     f.close()
     
